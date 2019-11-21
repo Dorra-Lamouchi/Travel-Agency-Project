@@ -6,7 +6,7 @@ package com.ditraacademy.travel_agency.core;
         import java.util.ArrayList;
 
 @RestController
-public class controller {
+public class EssaiController {
 //
 //   private ArrayList<User> userArrayList=new ArrayList<>();
 //

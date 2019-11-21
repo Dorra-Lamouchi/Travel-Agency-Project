@@ -1,4 +1,4 @@
-package com.ditraacademy.travel_agency.core;
+package com.ditraacademy.travel_agency.core.user;
 
 
 import javax.persistence.Entity;

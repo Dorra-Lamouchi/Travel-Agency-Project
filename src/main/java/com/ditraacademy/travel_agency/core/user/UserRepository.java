@@ -1,4 +1,4 @@
-package com.ditraacademy.travel_agency.core;
+package com.ditraacademy.travel_agency.core.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
