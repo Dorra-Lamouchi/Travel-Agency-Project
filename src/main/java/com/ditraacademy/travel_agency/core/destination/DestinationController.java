@@ -1,13 +1,7 @@
 package com.ditraacademy.travel_agency.core.destination;
-
-import com.ditraacademy.travel_agency.core.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
@@ -16,16 +10,33 @@ public class DestinationController {
     @Autowired
     DestinationRepository destinationRepository;
 
+    @Autowired
+    DestinationServices destinationServices;
+
     @PostMapping("/dest")
     public ResponseEntity<?> createDest (@RequestBody Destination destination){
-        destination = destinationRepository.save(destination);
-        return new ResponseEntity<>(destination, HttpStatus.OK);
+        return destinationServices.creatDest(destination);
     }
 
      @GetMapping("/destinations")
      public List<Destination> getDest(){
-         List<Destination> destList = destinationRepository.findAll();
-         return destList;
+         return destinationServices.getAllDest();
+    }
+
+    @GetMapping("/dest/{id}")
+    public ResponseEntity<?> getDestById (@PathVariable int id){
+        return destinationServices.getDestById(id);
+    }
+
+    @PutMapping("/dest/{id}")
+    public ResponseEntity<?> updateDest(@PathVariable int id, @RequestBody Destination updatedDest){
+        return destinationServices.updateDest(id, updatedDest);
+    }
+
+
+    @DeleteMapping("/dest/{id}")
+    public ResponseEntity<?> deleteDest(@PathVariable int id) {
+        return destinationServices.deleteDest(id);
     }
 
 
