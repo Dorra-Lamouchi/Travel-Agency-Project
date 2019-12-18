@@ -1,5 +1,6 @@
 package com.ditraacademy.travel_agency.core.voyage;
 import com.ditraacademy.travel_agency.core.destination.Destination;
+import com.ditraacademy.travel_agency.core.destination.DestinationRepository;
 import com.ditraacademy.travel_agency.utils.ErrorResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,24 +13,37 @@ import java.util.Optional;
 public class VoyageServices {
     @Autowired
     VoyageRepository voyageRepository;
+    @Autowired
+    DestinationRepository destinationRepository;
 
     public ResponseEntity<?> creatVoy(Voyage voyage) {
-        if (voyage.getTitre()==null)
-            return new ResponseEntity<>(new ErrorResponseModel("voyage title required"), HttpStatus.BAD_REQUEST);
-        if (voyage.getTitre().length()<3)
-            return new ResponseEntity<>(new ErrorResponseModel("wrong voyage title"),HttpStatus.BAD_REQUEST);
-        if (voyage.getDescription()==null)
-            return new ResponseEntity<>(new ErrorResponseModel("voyage description required"), HttpStatus.BAD_REQUEST);
-        if (voyage.getDescription().length()<3)
-            return new ResponseEntity<>(new ErrorResponseModel("wrong voyage description"),HttpStatus.BAD_REQUEST);
-        if (voyage.getNbPlaces()==null)
-            return new ResponseEntity<>(new ErrorResponseModel("place number required"),HttpStatus.BAD_REQUEST);
-        if (voyage.getNbPlaces()<0)
-            return new ResponseEntity<>(new ErrorResponseModel("wrong voyage place number"),HttpStatus.BAD_REQUEST);
-        if (voyage.getPrix()==null)
-            return new ResponseEntity<>(new ErrorResponseModel("price required"),HttpStatus.BAD_REQUEST);
-        if (voyage.getPrix()<0)
-            return new ResponseEntity<>(new ErrorResponseModel("wrong voyage price"),HttpStatus.BAD_REQUEST);
+        if(voyage.getDestination().getId()!= null){
+            Optional<Destination> destinationOptional = destinationRepository.findById((voyage.getDestination().getId()));
+
+            if(!destinationOptional.isPresent()){
+                ErrorResponseModel errorResponseModel=new ErrorResponseModel("destination not found");
+                return new ResponseEntity<>(errorResponseModel,HttpStatus.BAD_REQUEST);
+            }
+            // l'instruction la plus importante !!
+            voyage.setDestination(destinationOptional.get());
+
+            if (voyage.getTitre()==null)
+                return new ResponseEntity<>(new ErrorResponseModel("voyage title required"), HttpStatus.BAD_REQUEST);
+            if (voyage.getTitre().length()<3)
+                return new ResponseEntity<>(new ErrorResponseModel("wrong voyage title"),HttpStatus.BAD_REQUEST);
+            if (voyage.getDescription()==null)
+                return new ResponseEntity<>(new ErrorResponseModel("voyage description required"), HttpStatus.BAD_REQUEST);
+            if (voyage.getDescription().length()<3)
+                return new ResponseEntity<>(new ErrorResponseModel("wrong voyage description"),HttpStatus.BAD_REQUEST);
+            if (voyage.getNbPlaces()==null)
+                return new ResponseEntity<>(new ErrorResponseModel("place number required"),HttpStatus.BAD_REQUEST);
+            if (voyage.getNbPlaces()<0)
+                return new ResponseEntity<>(new ErrorResponseModel("wrong voyage place number"),HttpStatus.BAD_REQUEST);
+            if (voyage.getPrix()==null)
+                return new ResponseEntity<>(new ErrorResponseModel("price required"),HttpStatus.BAD_REQUEST);
+            if (voyage.getPrix()<0)
+                return new ResponseEntity<>(new ErrorResponseModel("wrong voyage price"),HttpStatus.BAD_REQUEST);
+        }
 
         voyage=voyageRepository.save(voyage);
         return new ResponseEntity<>(voyage,HttpStatus.OK);
@@ -38,6 +52,11 @@ public class VoyageServices {
 
     public List<Voyage> getAllVoy() {
         List<Voyage> voyList = voyageRepository.findAll();
+        return voyList;
+    }
+
+    public List<Voyage> getAllVoyQ() {
+        List<Voyage> voyList = voyageRepository.findAllByQuery(0);
         return voyList;
     }
 
@@ -97,6 +116,13 @@ public class VoyageServices {
         }
         Voyage Voy=OpVoy.get();
         return new ResponseEntity<>(Voy, HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getVoyByPrix (double prixInf,double prixSup){
+        List<Voyage> voy;
+        voy=voyageRepository.findAllByPrixBetweenAndNbPlacesIsNot(prixInf,prixSup,0);
+
+        return new ResponseEntity<>(voy, HttpStatus.OK);
     }
 }
 

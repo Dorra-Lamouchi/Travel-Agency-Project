@@ -1,4 +1,5 @@
 package com.ditraacademy.travel_agency.core.user;
+import com.ditraacademy.travel_agency.core.user.models.SignInRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,15 @@ public class UserController {
     @Autowired
     UserServices userServices;
 
-    @PostMapping("/user")
+    @PostMapping("/auth/register")
     public ResponseEntity<?> creatUser (@RequestBody User user){
 
         return userServices.creatUser(user);
+    }
+
+    @PostMapping("/auth/signin")
+    public ResponseEntity<?> signIn (@RequestBody SignInRequest signInRequest){
+        return userServices.signInService(signInRequest);
     }
 
     @GetMapping("/users")

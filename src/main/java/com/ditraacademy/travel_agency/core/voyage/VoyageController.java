@@ -23,14 +23,25 @@ public class VoyageController {
 
     @GetMapping("/voyages")
     public List<Voyage> getVoy(){
-        List<Voyage> voyList = voyageRepository.findAll();
-        return voyList;
+        return voyageServices.getAllVoy();
+    }
+
+    @GetMapping("/voyagesQ")
+    public List<Voyage> getVoyQ(){
+        return voyageServices.getAllVoyQ();
     }
 
     @GetMapping("/voy/{id}")
     public ResponseEntity<?> getVoyById (@PathVariable int id){
         return voyageServices.getVoyById(id);
     }
+
+    @GetMapping("/voy")
+    public ResponseEntity<?> getVoyByPrix (@RequestParam double prixInf, @RequestParam double prixSup){
+        return voyageServices.getVoyByPrix(prixInf,prixSup);
+    }
+
+
 
     @PutMapping("/voy/{id}")
     public ResponseEntity<?> updateVoy(@PathVariable int id, @RequestBody Voyage updatedVoy){
